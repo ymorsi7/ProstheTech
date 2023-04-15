@@ -1,18 +1,9 @@
-import asyncio
-import json
-import logging
-import random
-import sys
-from datetime import datetime
-from typing import Iterator
-import uvicorn
-import serial
-import cv2
-from fastapi import FastAPI
-from fastapi.requests import Request
-from fastapi.responses import HTMLResponse, StreamingResponse
-from fastapi.templating import Jinja2Templates
-from starlette.responses import Response
+## License: Apache 2.0. See LICENSE file in root directory.
+## Copyright(c) 2015-2017 Intel Corporation. All Rights Reserved.
+
+###############################################
+##      Open CV and Numpy integration        ##
+###############################################
 
 import pyrealsense2 as rs
 import numpy as np
@@ -47,10 +38,7 @@ else:
 # Start streaming
 pipeline.start(config)
 
-
-
-camera = cv2.VideoCapture(0)
-def gen_frames():
+try:
     while True:
 
         # Wait for a coherent pair of frames: depth and color
@@ -77,24 +65,12 @@ def gen_frames():
         else:
             images = np.hstack((color_image, depth_colormap))
 
-        ret, buffer = cv2.imencode('.jpg', images)
-        frame = buffer.tobytes()
-        yield (b'--frame\r\n'
-                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+        # Show images
+        cv2.namedWindow('RealSense', cv2.WINDOW_AUTOSIZE)
+        cv2.imshow('RealSense', images)
+        cv2.waitKey(1)
 
+finally:
 
-
-application = FastAPI()
-templates = Jinja2Templates(directory="templates")
-
-
-@application.get("/", response_class=HTMLResponse)
-async def index(request: Request) -> Response:
-    return templates.TemplateResponse("index.html", {"request": request})
-
-@application.get('/video_feed')
-def video_feed():
-    return StreamingResponse(gen_frames(), media_type='multipart/x-mixed-replace; boundary=frame')
-
-if __name__ == '__main__':
-    uvicorn.run(application, host='0.0.0.0', port=6543)
+    # Stop streaming
+    pipeline.stop()
