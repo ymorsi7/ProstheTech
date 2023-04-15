@@ -13,9 +13,8 @@ app = FastAPI()
 # Mount static directories
 app.mount("/public", StaticFiles(directory="public"), name="public")
 
-app.mount("/assets", StaticFiles(directory="assets"), name="assets")
-app.mount("/assets/images", StaticFiles(directory="/assets/images"), name="/assets/images")
-app.mount("/assets/js", StaticFiles(directory="/assets/js"), name="/assets/js")
+app.mount("/images", StaticFiles(directory="images"), name="images")
+app.mount("/js", StaticFiles(directory="js"), name="js")
 
 @app.get("/", response_class = HTMLResponse)
 def get_html() -> HTMLResponse:
