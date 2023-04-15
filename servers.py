@@ -1,7 +1,7 @@
 import uvicorn
 from fastapi import FastAPI, Request
 from fastapi.templating import Jinja2Templates
-from fastapi.responses import StreamingResponse
+from fastapi.responses import StreamingResponse, HTMLResponse
 import serial
 import datetime, psutil
 import asyncio
@@ -34,11 +34,12 @@ def index(request: Request):
 
 @app.get('/data')
 def video_feed(request: Request):
+    
     while 1:
         data = serialPort.readline(size)
         if data:
             print(data)
-    return templates.TemplateResponse("index.html", {"request": request})
+    
 
 if __name__ == '__main__':
     uvicorn.run(app, host='0.0.0.0', port=8000)
