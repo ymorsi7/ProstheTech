@@ -86,7 +86,7 @@ async def generate_random_data(request: Request) -> Iterator[str]:
     """
     Gets data from the connected bluetooth device
 
-    :return: String containing current timestamp (YYYY-mm-dd HH:MM:SS) and randomly generated data.
+    :return: String containing current timestamp (YYYY-mm-dd HH:MM:SS) and data gathered from the bluetooth.
     """
     client_ip = request.client.host
     logger.info("Client %s connected", client_ip)
