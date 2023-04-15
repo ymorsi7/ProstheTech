@@ -10,8 +10,11 @@ import json
 
 app = FastAPI()
 
-# Mount the static directory
+# Mount static directories
 app.mount("/public", StaticFiles(directory="public"), name="public")
+
+app.mount("/images", StaticFiles(directory="images"), name="images")
+app.mount("/js", StaticFiles(directory="js"), name="js")
 
 @app.get("/", response_class = HTMLResponse)
 def get_html() -> HTMLResponse:
