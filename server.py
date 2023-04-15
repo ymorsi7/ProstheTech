@@ -12,13 +12,11 @@ app = FastAPI()
 
 # Mount static directories
 app.mount("/public", StaticFiles(directory="public"), name="public")
-
-app.mount("/images", StaticFiles(directory="images"), name="images")
-app.mount("/js", StaticFiles(directory="js"), name="js")
+app.mount("/assets", StaticFiles(directory="assets"), name="assets")
 
 @app.get("/", response_class = HTMLResponse)
 def get_html() -> HTMLResponse:
-    with open("index2.html") as html:
+    with open("index.html") as html:
         return HTMLResponse(content=html.read())
 
 if __name__ == "__main__":
