@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Creating Real-Time Charts with Flask</title>
+    <title>Real-Time EMG Voltage</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.css" rel="stylesheet">
 </head>
@@ -17,6 +17,8 @@
             </div>
         </div>
     </div>
+    <h3 style="text-align:center"> Live Streaming </h3>
+    <img src="{{ url_for('video_feed') }}" width="50%">
 </div>
 <!--suppress JSUnresolvedLibraryURL -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
@@ -31,7 +33,7 @@
             data: {
                 labels: [],
                 datasets: [{
-                    label: "Random Dataset",
+                    label: "EMG Voltage",
                     backgroundColor: 'rgb(255, 99, 132)',
                     borderColor: 'rgb(255, 99, 132)',
                     data: [],
@@ -42,7 +44,7 @@
                 responsive: true,
                 title: {
                     display: true,
-                    text: 'Creating Real-Time Charts with Flask'
+                    text: 'Real-Time EMG value'
                 },
                 tooltips: {
                     mode: 'index',
