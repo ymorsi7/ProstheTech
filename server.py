@@ -12,7 +12,6 @@ app = FastAPI()
 
 # Mount static directories
 app.mount("/public", StaticFiles(directory="public"), name="public")
-
 app.mount("/assets", StaticFiles(directory="assets"), name="assets")
 
 @app.get("/", response_class = HTMLResponse)
