@@ -7,6 +7,7 @@ from fastapi import FastAPI
 from fastapi.requests import Request
 from fastapi.responses import HTMLResponse, StreamingResponse
 from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
 from starlette.responses import Response
 import pyrealsense2 as rs
 import numpy as np
@@ -106,10 +107,15 @@ async def generate_random_data(request: Request) -> Iterator[str]:
 
 application = FastAPI()
 templates = Jinja2Templates(directory="templates")
+application.mount("/public", StaticFiles(directory="public"), name="public")
+
+application.mount("/assets", StaticFiles(directory="assets"), name="assets")
+
+
 
 @application.get("/", response_class=HTMLResponse)
 async def index(request: Request) -> Response:
-    return templates.TemplateResponse("index2.html", {"request": request})
+    return templates.TemplateResponse("index.html", {"request": request})
 
 @application.get('/video_feed')
 async def video_feed():
