@@ -17,6 +17,11 @@ app.mount("/assets", StaticFiles(directory="assets"), name="assets")
 def get_html() -> HTMLResponse:
     with open("index.html") as html:
         return HTMLResponse(content=html.read())
+     
+@app.get("/index1", response_class = HTMLResponse)
+def get_html() -> HTMLResponse:
+    with open("index1.html") as html:
+        return HTMLResponse(content=html.read())
     
 @app.get("/demo", response_class = HTMLResponse)
 def get_html() -> HTMLResponse:
