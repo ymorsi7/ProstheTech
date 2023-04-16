@@ -150,9 +150,15 @@
         data: {
             labels: [],
             datasets: [{
-                label: "EMG Voltage",
+                label: "EMG Voltage Left",
                 backgroundColor: 'rgb(255, 99, 132)',
                 borderColor: 'rgb(255, 99, 132)',
+                data: [],
+                fill: false,
+            }, {
+                label: "EMG Voltage Right",
+                backgroundColor: 'rgb(0, 99, 132)',
+                borderColor: 'rgb(0, 99, 132)',
                 data: [],
                 fill: false,
             }],
@@ -198,12 +204,14 @@
 
     source.onmessage = function (event) {
         const data = JSON.parse(event.data);
-        if (config.data.labels.length === 20) {
+        if (config.data.labels.length === 40) {
             config.data.labels.shift();
             config.data.datasets[0].data.shift();
+            config.data.datasets[1].data.shift();
         }
         config.data.labels.push(data.time);
-        config.data.datasets[0].data.push(data.value);
+        config.data.datasets[0].data.push(data.value1);
+        config.data.datasets[1].data.push(data.value2);
         lineChart.update();
     }
 });

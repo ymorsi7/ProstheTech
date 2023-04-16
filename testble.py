@@ -30,6 +30,9 @@ size = 4096
 
 GpioPins = [18, 23, 24, 25]
 
+camera = cv2.VideoCapture(0)
+
+face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
 # Declare a named instance of class pass a name and motor type
 mymotortest = RpiMotorLib.BYJMotor("MyMotorOne", "28BYJ")
 
@@ -107,19 +110,35 @@ async def generate_random_data(request: Request) -> Iterator[str]:
         # Get the difference between the average and the current value
         diff_data1 = avg_data1 - float(newdata[0])
         diff_data2 = avg_data2 - float(newdata[1])
-        if(20 > abs(diff_data1) > 0.25):
+        if(20 > abs(diff_data1) > 0.2):
             print(diff_data1)
             move_left()
-        if(20 > abs(diff_data2) > 0.25):
+        elif(20 > abs(diff_data2) > 0.2):
             print(diff_data2)
             move_right()
         await asyncio.sleep(0.1)
 
-async def move_left():
+def move_left():
     mymotortest.motor_run(GpioPins , .002, 5, True, False, "full", .05)
-
-async def move_right():
+def move_right():
     mymotortest.motor_run(GpioPins , .002, 5, False, False, "full", .05)
+
+def gen_frames():
+    while True:
+        success, frame = camera.read()
+        
+        if not success:
+            break
+        else:
+            
+
+            cv2.normalize(frame, frame, 50, 255, cv2.NORM_MINMAX)
+            frame = cv2.flip(frame, 0)
+            ret, buffer = cv2.imencode('.jpg', frame)
+            frame = buffer.tobytes()
+            yield (b'--frame\r\n'
+                   b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+
 
 application = FastAPI()
 templates = Jinja2Templates(directory="templates")
