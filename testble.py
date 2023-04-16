@@ -123,7 +123,8 @@ def move_left():
 def move_right():
     mymotortest.motor_run(GpioPins , .002, 5, False, False, "full", .05)
 
-def gen_frames():
+def gen_frames(): 
+    face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
     while True:
         success, frame = camera.read()
         
@@ -132,7 +133,7 @@ def gen_frames():
         else:
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             # Face detection using Haar cascades
-            face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
+           
 
             # Detect faces
             faces = face_cascade.detectMultiScale(gray, 1.1, 4)
