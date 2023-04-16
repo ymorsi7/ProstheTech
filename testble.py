@@ -37,23 +37,23 @@ async def generate_random_data(request: Request) -> Iterator[str]:
     client_ip = request.client.host
     logger.info("Client %s connected", client_ip)
     while True:
-        data = serialPort.readline()
-        if data:
-            data = data.decode("utf-8")
-            print(data)
-            """data.replace("\r\n","")
-            if int(data) > 0.5:
-                move_left()
-            else:
-                move_right()
-                """
-        json_data = json.dumps(
-            {
-                "time": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                "value": data,
-            }
-        )
-        yield f"data:{json_data}\n\n"
+        try:
+            data = serialPort.readline()
+            if data:
+                data = data.decode("utf-8")
+                newdata = data.split(" ")
+            json_data = json.dumps(
+                {
+                    "time": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                    "value1": newdata[0],
+                    "value2": newdata[1]
+                }
+            )
+            yield f"data:{json_data}\n\n"
+        except:
+            continue
+        avgdata1 =
+        avgdata2 = 
         await asyncio.sleep(0.1)
 
 async def move_left():
