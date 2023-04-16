@@ -1,4 +1,4 @@
-### ProstheTech
+### ProstheTech UCSD
 
 ## Inspiration
 One of the obstacles faced by some people with disabilities and amputees is the inaccessibility of devices used to produce creative media such as cameras- and the market solutions that do exist are often extremely expensive. The goal of our project is to create a low cost prosthetic device that can be controlled with an EMG that can record arm flex movements. 
