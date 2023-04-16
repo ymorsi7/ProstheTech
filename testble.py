@@ -22,9 +22,17 @@ import RPi.GPIO as GPIO
 import time
 from RpiMotorLib import RpiMotorLib
 
-"""
-A class to provide a circular list structure that maintains its length as elements are added to it.
-"""
+logging.basicConfig(stream=sys.stdout, level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
+logger = logging.getLogger(__name__)
+
+serialPort = serial.Serial(port='/dev/rfcomm0', baudrate=115200, timeout=0, parity=serial.PARITY_EVEN, stopbits=1)
+size = 4096
+
+GpioPins = [18, 23, 24, 25]
+
+# Declare a named instance of class pass a name and motor type
+mymotortest = RpiMotorLib.BYJMotor("MyMotorOne", "28BYJ")
+
 class CircularList(list):
 
   def __init__(self, data, maxlen=0):
@@ -58,11 +66,9 @@ class CircularList(list):
   def clear(self):
    self.add([0]*len(self))
 
-logging.basicConfig(stream=sys.stdout, level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
-logger = logging.getLogger(__name__)
 
-serialPort = serial.Serial(port='/dev/rfcomm0', baudrate=115200, timeout=0, parity=serial.PARITY_EVEN, stopbits=1)
-size = 4096
+
+
 
 async def generate_random_data(request: Request) -> Iterator[str]:
     """
@@ -70,18 +76,17 @@ async def generate_random_data(request: Request) -> Iterator[str]:
 
     :return: String containing current timestamp (YYYY-mm-dd HH:MM:SS) and data gathered from the bluetooth.
     """
+    last_50_samples_data1 = CircularList([],maxlen=20)
+    last_50_samples_data2 = CircularList([],maxlen=20)
     client_ip = request.client.host
     logger.info("Client %s connected", client_ip)
-
-    last_50_samples_data1 = CircularList([],maxlen=50)
-    last_50_samples_data2 = CircularList([],maxlen=50)
-
     while True:
         try:
             data = serialPort.readline()
             if data:
                 data = data.decode("utf-8")
                 newdata = data.split(" ")
+                newdata[1] = newdata[1].replace("\r\n", "")
             json_data = json.dumps(
                 {
                     "time": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
@@ -92,9 +97,8 @@ async def generate_random_data(request: Request) -> Iterator[str]:
             yield f"data:{json_data}\n\n"
         except:
             continue
-        
-        last_50_samples_data1.add(newdata[0])
-        last_50_samples_data2.add(newdata[1])
+        last_50_samples_data1.add(float(newdata[0]))
+        last_50_samples_data2.add(float(newdata[1]))
 
         # Get average of last 50 samples
         avg_data1 = sum(last_50_samples_data1) / len(last_50_samples_data1)
@@ -103,18 +107,19 @@ async def generate_random_data(request: Request) -> Iterator[str]:
         # Get the difference between the average and the current value
         diff_data1 = avg_data1 - float(newdata[0])
         diff_data2 = avg_data2 - float(newdata[1])
-
-        # print the difference
-
+        if(20 > abs(diff_data1) > 0.25):
+            print(diff_data1)
+            move_left()
+        if(20 > abs(diff_data2) > 0.25):
+            print(diff_data2)
+            move_right()
         await asyncio.sleep(0.1)
 
 async def move_left():
-    for i in range(50):
-        mymotortest.motor_run(GpioPins , .002, 5, True, False, "full", .05)
+    mymotortest.motor_run(GpioPins , .002, 5, True, False, "full", .05)
 
 async def move_right():
-    for i in range(50):
-        mymotortest.motor_run(GpioPins , .002, 5, False, False, "full", .05)
+    mymotortest.motor_run(GpioPins , .002, 5, False, False, "full", .05)
 
 application = FastAPI()
 templates = Jinja2Templates(directory="templates")
