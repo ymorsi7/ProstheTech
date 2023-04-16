@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from datetime import datetime
 from typing import Iterator
 import uvicorn
@@ -16,6 +17,13 @@ import json
 import logging
 import sys
 import asyncio
+import RPi.GPIO as GPIO
+import time
+from RpiMotorLib import RpiMotorLib
+
+GpioPins = [18, 23, 24, 25]
+mymotortest = RpiMotorLib.BYJMotor("MyMotorOne", "28BYJ")
+
 
 logging.basicConfig(stream=sys.stdout, level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 logger = logging.getLogger(__name__)
@@ -96,6 +104,11 @@ async def generate_random_data(request: Request) -> Iterator[str]:
         if data:
             data = data.decode("utf-8")
             #print(data)
+            if data > 0.001:
+                move_left()
+            else:
+                move_right()
+
         json_data = json.dumps(
             {
                 "time": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
@@ -105,13 +118,19 @@ async def generate_random_data(request: Request) -> Iterator[str]:
         yield f"data:{json_data}\n\n"
         await asyncio.sleep(0.5)
 
+async def move_left():
+    for i in range(50):
+        mymotortest.motor_run(GpioPins , .002, 5, True, False, "full", .05)
+
+async def move_right():
+    for i in range(50):
+        mymotortest.motor_run(GpioPins , .002, 5, False, False, "full", .05)
+
 application = FastAPI()
 templates = Jinja2Templates(directory="templates")
 application.mount("/public", StaticFiles(directory="public"), name="public")
 
 application.mount("/assets", StaticFiles(directory="assets"), name="assets")
-
-
 
 @application.get("/", response_class=HTMLResponse)
 async def index(request: Request) -> Response:
