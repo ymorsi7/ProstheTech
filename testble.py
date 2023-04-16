@@ -110,10 +110,10 @@ async def generate_random_data(request: Request) -> Iterator[str]:
         # Get the difference between the average and the current value
         diff_data1 = avg_data1 - float(newdata[0])
         diff_data2 = avg_data2 - float(newdata[1])
-        if(20 > abs(diff_data1) > 0.2):
+        if(20 > abs(diff_data1) > 0.15):
             print(diff_data1)
             move_left()
-        elif(20 > abs(diff_data2) > 0.2):
+        elif(20 > abs(diff_data2) > 0.15):
             print(diff_data2)
             move_right()
         await asyncio.sleep(0.1)
@@ -130,10 +130,21 @@ def gen_frames():
         if not success:
             break
         else:
-            
+            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            # Face detection using Haar cascades
+            face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
+
+            # Detect faces
+            faces = face_cascade.detectMultiScale(gray, 1.1, 4)
+            img_faces = frame.copy()
+
+            # Draw the faces on the original imIage
+            for (x, y, w, h) in faces:
+                cv2.rectangle(img_faces, (x, y), (x+w, y+h), (255, 0, 0), 2)
+
 
             cv2.normalize(frame, frame, 50, 255, cv2.NORM_MINMAX)
-            frame = cv2.flip(frame, 0)
+            frame = cv2.flip(img_faces, 0)
             ret, buffer = cv2.imencode('.jpg', frame)
             frame = buffer.tobytes()
             yield (b'--frame\r\n'
