@@ -1,4 +1,6 @@
-### ProstheTech UCSD
+# ProstheTech UCSD
+
+<b>HARD Hack Runner-Up<b>
 
 ## Inspiration
 One of the obstacles faced by some people with disabilities and amputees is the inaccessibility of devices used to produce creative media such as cameras- and the market solutions that do exist are often extremely expensive. The goal of our project is to create a low cost prosthetic device that can be controlled with an EMG that can record arm flex movements. 
@@ -23,3 +25,14 @@ Use the parts that are given to you and don't try to overthink things. Joking as
 
 ## What's next for ProstheTech UCSD
 One of the longer term goals of our project is to implement more advanced DSP methods to better filter the EMG signals and make our prosthetic device less prone to external noise. We also would like to create an actual low cost prosthetic/robotic arm that is specifically geared towards media production.
+
+
+<hr>
+
+## Team Photos
+
+![Yusuf and Girish](assets/images/1.jpeg)
+
+![The team presenting](assets/images/2.jpg)
+![The team after presenting](assets/images/3.jpg)
+![The team after being awarded second place](assets/images/4.jpg)
