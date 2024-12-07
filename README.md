@@ -31,10 +31,5 @@ One of the longer term goals of our project is to implement more advanced DSP me
 
 ## Team Photos
 
-![Yusuf and Girish](assets/images/1.jpeg)
-
-![The team presenting](assets/images/2.jpg)
-![The team after presenting](assets/images/3.jpg)
-![The team after being awarded second place](assets/images/4.jpg)
 ![Girish and Fahad building the Op-Amp Circuit](assets/images/5.JPG)
 ![Dominic and Girish Debugging](assets/images/6.JPG)
